@@ -1,0 +1,11 @@
+# Local-only working documentation (development-flow)
+.docs/
+
+# Run logs produced by the helper
+logs/
+*.log
+
+# Windows / editor cruft
+Thumbs.db
+Desktop.ini
+.vs/
