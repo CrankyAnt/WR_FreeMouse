@@ -1,0 +1,10 @@
+version = 1
+
+# WR_FreeMouse is fully open source: every tracked file is MIT-licensed.
+# Local-only working documentation under .docs/ is not tracked by Git and is
+# therefore outside the scope of these assignments.
+
+[[annotations]]
+path = ["**"]
+SPDX-FileCopyrightText = "2026 CrankyAnt"
+SPDX-License-Identifier = "MIT"
