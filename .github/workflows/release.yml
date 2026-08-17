@@ -51,7 +51,7 @@ jobs:
       - name: Build the release ZIP from tracked source
         id: build
         shell: powershell
-        run: .\.github\scripts\Build-Zip.ps1 -Version $env:GITHUB_REF_NAME
+        run: .\.github\scripts\Build-Zip.ps1
 
       - name: Attest build provenance for the exact ZIP
         uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
