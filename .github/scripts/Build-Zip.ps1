@@ -31,6 +31,9 @@ $staging    = Join-Path $OutDir $folderName
 
 if (Test-Path -LiteralPath $staging) { Remove-Item -Recurse -Force -LiteralPath $staging }
 New-Item -ItemType Directory -Force -Path $staging | Out-Null
+# Normalize to an absolute path so the Substring below matches each file's
+# resolved FullName (the default OutDir contains '..\..').
+$staging = (Resolve-Path -LiteralPath $staging).Path
 
 Copy-Item -Recurse -Force -Path (Join-Path $PackageDir '*') -Destination $staging
 Copy-Item -Force -LiteralPath (Join-Path $RepoRoot 'README.md') -Destination (Join-Path $staging 'README.md')
