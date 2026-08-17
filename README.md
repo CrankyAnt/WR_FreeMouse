@@ -142,7 +142,7 @@ Every official release is tied to three things, so you can be sure a download is
   provenance for it. You can check the exact file you downloaded with the GitHub CLI:
 
   ```bash
-  gh attestation verify "WR FreeMouse 1.0.0.zip" --repo CrankyAnt/WR_FreeMouse
+  gh attestation verify "WR-FreeMouse.zip" --repo CrankyAnt/WR_FreeMouse
   ```
 
 - **An immutable release** — once published, the release and its files can't be changed or
