@@ -31,9 +31,12 @@ $staging    = Join-Path $OutDir $folderName
 
 if (Test-Path -LiteralPath $staging) { Remove-Item -Recurse -Force -LiteralPath $staging }
 New-Item -ItemType Directory -Force -Path $staging | Out-Null
-# Normalize to an absolute path so the Substring below matches each file's
-# resolved FullName (the default OutDir contains '..\..').
+# Normalize to absolute paths (the default OutDir contains '..\..'). The
+# staging prefix must match each file's resolved FullName for the Substring
+# below, and the emitted ZIP path must be free of '..' so the attestation
+# action accepts it as a subject-path.
 $staging = (Resolve-Path -LiteralPath $staging).Path
+$OutDir  = Split-Path -Parent $staging
 
 Copy-Item -Recurse -Force -Path (Join-Path $PackageDir '*') -Destination $staging
 Copy-Item -Force -LiteralPath (Join-Path $RepoRoot 'README.md') -Destination (Join-Path $staging 'README.md')
