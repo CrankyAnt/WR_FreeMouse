@@ -2,3 +2,9 @@
 
 *.cmd text eol=crlf
 *.bat text eol=crlf
+
+# WR FreeMouse public release package: ship exactly as tested.
+# The tested Windows PowerShell 5.1 package is LF throughout (including .cmd),
+# with a UTF-8 BOM on the .ps1 files. Keep the whole payload LF so the
+# CI-built ZIP matches the tested package; the BOM is preserved as content.
+package/** text eol=lf

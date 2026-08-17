@@ -5,6 +5,9 @@
 logs/
 *.log
 
+# Build output (release ZIP assembled by .github/scripts/Build-Zip.ps1)
+dist/
+
 # Windows / editor cruft
 Thumbs.db
 Desktop.ini
