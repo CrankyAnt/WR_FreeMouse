@@ -4,7 +4,7 @@ WR FreeMouse is a small Windows helper for **Workers & Resources: Soviet Republi
 It lets your mouse move freely across multiple monitors without Alt+Tab, and gives you a usable
 cursor back in the game the moment you click into it.
 
-> Version 1.0.0 — first public release.
+> Version 1.0.1 — first public release.
 
 ## Overview
 
@@ -199,7 +199,7 @@ authoritative record.
 
 ## Changelog
 
-### 1.0.0
+### 1.0.1
 
 Initial public release: free mouse movement across monitors, clean handoff to and from the game,
 a single-click return, an in-game cursor over exposed parts of the game, silent start through
