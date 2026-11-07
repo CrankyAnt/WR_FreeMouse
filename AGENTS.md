@@ -59,7 +59,7 @@ Every tracked top-level folder whose name does not start with a dot gets one lin
 One line per validation or test command and per CI workflow the repository runs. A change that adds, removes or renames a command or workflow, or changes what it validates or tests, adds, removes or rewrites its line in the same change.
 
 - `.github/scripts/Validate-Package.ps1`: parses every package PowerShell script and compiles the embedded C# core under Windows PowerShell 5.1
-- `.github/scripts/Test-PackageContents.ps1`: checks the package allow-list, version consistency and encoding; with `-ExpectedVersion <tag>` it also matches the version to a release tag
+- `.github/scripts/Test-PackageContents.ps1`: checks the package allow-list, the root documents the release ZIP ships, version consistency and encoding; with `-ExpectedVersion <tag>` it also matches the version to a release tag
 - `repository-hygiene` (shared, `v1`): the convention checks of branch names, commit subjects and pull-request titles, the credential scan, workflow validation, Dependabot coverage and the Markdown link check, and `reuse lint`
 - `dependabot-auto-merge` (shared, `v1`): auto-merge of qualifying Dependabot pull requests
 - `release`: runs both package validations on pushes and pull requests to `main`, and on a signed `v*` tag builds, attests and publishes the release ZIP

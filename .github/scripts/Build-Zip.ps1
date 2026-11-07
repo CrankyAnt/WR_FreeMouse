@@ -7,11 +7,14 @@
         WR-FreeMouse.zip
             <package/ payload at the archive root>
             README.md          (copied from the repo root - single source)
+            CHANGELOG.md       (copied from the repo root - single source)
+            LICENSE.md         (copied from the repo root - single source)
+            REUSE.toml         (copied from the repo root - single source)
 
     The ZIP name is version-less on purpose: the version lives in the release
     tag, so the same asset name works for every release. Files are placed at
     the archive root (no wrapping folder). The assembled set is checked against
-    an exact 9-file allow-list before zipping. Emits the ZIP path/name for the
+    an exact 12-file allow-list before zipping. Emits the ZIP path/name for the
     workflow when GITHUB_OUTPUT is set.
 #>
 [CmdletBinding()]
@@ -37,10 +40,16 @@ $staging = (Resolve-Path -LiteralPath $staging).Path
 $OutDir  = Split-Path -Parent $staging
 
 Copy-Item -Recurse -Force -Path (Join-Path $PackageDir '*') -Destination $staging
-Copy-Item -Force -LiteralPath (Join-Path $RepoRoot 'README.md') -Destination (Join-Path $staging 'README.md')
+$rootDocuments = @('README.md', 'CHANGELOG.md', 'LICENSE.md', 'REUSE.toml')
+foreach ($doc in $rootDocuments) {
+    Copy-Item -Force -LiteralPath (Join-Path $RepoRoot $doc) -Destination (Join-Path $staging $doc)
+}
 
 $expected = @(
     'README.md',
+    'CHANGELOG.md',
+    'LICENSE.md',
+    'REUSE.toml',
     'WR FreeMouse Setup.cmd',
     'WR FreeMouse Setup.ps1',
     'Files\Package version.json',
@@ -56,7 +65,7 @@ $diff = Compare-Object ($expected | Sort-Object) ($actual | Sort-Object)
 if ($diff) {
     Write-Host ("Expected: {0}" -f ($expected -join ', '))
     Write-Host ("Actual:   {0}" -f ($actual -join ', '))
-    throw 'Assembled package does not match the expected 9-file allow-list.'
+    throw 'Assembled package does not match the expected 12-file allow-list.'
 }
 Write-Host ("Assembled package OK ({0} files, root-level)." -f $expected.Count)
 
