@@ -1,22 +1,60 @@
-# Domain Documentation
+# Domain Docs
 
-Read the relevant domain documentation before exploring or naming concepts:
+How the engineering skills should consume this repo's domain documentation when exploring the codebase.
 
-- Root `CONTEXT.md` for a single context.
-- Root `CONTEXT-MAP.md` for multiple contexts, followed by every linked `CONTEXT.md` relevant to the work.
-- Root `docs/adr/` for architectural decisions relevant to the area.
+**Layout:** single-context
 
-`CONTEXT.md` is a domain-language glossary, not a README, implementation plan, or architecture guide. Use its canonical terms in issues, specs, tests, and code.
+## Before exploring, read these
 
-Create domain files lazily through `model-domain` when a real term or qualifying decision crystallises. ADRs always go under root `docs/adr/`, including decisions concerning a subcontext.
+- **`GLOSSARY.md`** at the repo root, or
+- **`GLOSSARY-MAP.md`** at the repo root if it exists: it points at one `GLOSSARY.md` per context. Read each one relevant to the topic.
+- **`docs/adr/`**: read ADRs that touch the area you're about to work in. In multi-context repos, also check `src/<context>/docs/adr/` for context-scoped decisions.
+- **`SCOPE.md`** at the repo root: the product's scope, its purpose and non-goals. Read it when you write or recommend new work. During delivery the contract bounds the builder instead; triage applies this file to incidental findings.
 
-If ADRs or context documents are found outside the configured layout, report them and propose a maintenance issue. Do not silently move or duplicate them while doing unrelated work. Surface conflicts with an existing ADR explicitly.
+If any of these files don't exist, **proceed silently**. Don't flag their absence; don't suggest creating them upfront. The `model-domain` skill (reached via `grill-and-document`) creates them lazily when terms or decisions actually get resolved, and `SCOPE.md` only through `grill-and-document`.
 
-## Standalone domain-documentation delivery
+Outside delivery, commit resolved terms and ADRs to `main` immediately. During `deliver-spec` or `deliver-work`, commit them with the delivered change, for `deliver-spec` on the integration branch; they become valid when it lands.
 
-This strategy applies only when no invoking workflow already owns the domain change. Domain artifacts created inside a delivery follow that delivery's recorded delivery path and publish boundary.
+## File structure
 
-**Delivery path:** direct-main
-**Publish boundary:** commit-and-push
-**Required validation:** Verify the configured domain layout, inspect the exact artifact diff, and run `git diff --check`.
-**Reason:** Small, reversible canonical-language changes must reach the base branch before dependent specs and branches are created.
+Single-context repo (most repos):
+
+```
+/
+├── GLOSSARY.md
+├── docs/adr/
+│   ├── 0001-event-sourced-orders.md
+│   └── 0002-postgres-for-write-model.md
+└── src/
+```
+
+Multi-context repo (presence of `GLOSSARY-MAP.md` at the root):
+
+```
+/
+├── GLOSSARY-MAP.md
+├── docs/adr/                          ← system-wide decisions
+└── src/
+    ├── ordering/
+    │   ├── GLOSSARY.md
+    │   └── docs/adr/                  ← context-specific decisions
+    └── billing/
+        ├── GLOSSARY.md
+        └── docs/adr/
+```
+
+## Use the glossary's vocabulary
+
+When your output names a domain concept (in an issue title, a refactor proposal, a hypothesis, a test name), use the term as defined in `GLOSSARY.md`. Don't drift to synonyms the glossary explicitly avoids.
+
+If the concept you need isn't in the glossary yet, that's a signal: either you're inventing language the project doesn't use (reconsider) or there's a real gap (note it for `model-domain`).
+
+## Flag ADR conflicts
+
+If your output contradicts an existing ADR, surface it explicitly rather than silently overriding:
+
+> _Contradicts ADR-0007 (event-sourced orders), but worth reopening because…_
+
+## Flag work outside the scope
+
+Work belongs to the product only when it serves the purpose in `SCOPE.md` and hits none of its non-goals. If your output would not, put it to the user as one question: a conscious extension, or not. Never go outside the scope silently, and never reject work for it on your own.
