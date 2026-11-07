@@ -6,20 +6,26 @@
     files, be internally version-consistent, and use the tested encoding.
 
     - Exact source allow-list: no test, scratch, or stray files.
+    - Root documents: the repo-root files that Build-Zip.ps1 ships beside the
+      payload (README.md, CHANGELOG.md, LICENSE.md, REUSE.toml) must exist.
     - Version consistency: the version lives ONLY in Package version.json, and
-      (when a tag is given) that version matches the release tag.
-    - Encoding: payload .ps1 are UTF-8 with a BOM and no CRLF; the other files
-      are LF with no BOM.
+      (when a tag is given) that version matches the release tag. The root
+      documents are exempt: CHANGELOG.md names every release version.
+    - Encoding: payload .ps1 are UTF-8 with a BOM and no CRLF; the other files,
+      root documents included, are LF with no BOM.
 #>
 [CmdletBinding()]
 param(
     [string]$PackageDir,
+    [string]$RepoRoot,
     [string]$ExpectedVersion = ''
 )
 
 $ErrorActionPreference = 'Stop'
 if (-not $PackageDir) { $PackageDir = Join-Path $PSScriptRoot '..\..\package' }
+if (-not $RepoRoot)   { $RepoRoot   = Join-Path $PSScriptRoot '..\..' }
 $root = (Resolve-Path -LiteralPath $PackageDir).Path
+$repo = (Resolve-Path -LiteralPath $RepoRoot).Path
 
 function Get-RelativeFiles {
     param([string]$Base)
@@ -46,6 +52,16 @@ if ($diff) {
     throw 'Package contents do not match the expected allow-list.'
 }
 Write-Host ("Allow-list OK ({0} files)." -f $expected.Count)
+
+Write-Host ''
+Write-Host '== Root documents =='
+$rootDocuments = @('README.md', 'CHANGELOG.md', 'LICENSE.md', 'REUSE.toml')
+$missingDocs = @($rootDocuments | Where-Object { -not (Test-Path -LiteralPath (Join-Path $repo $_) -PathType Leaf) })
+if ($missingDocs) {
+    $missingDocs | ForEach-Object { Write-Host ("  missing:    {0}" -f $_) }
+    throw 'Root documents shipped in the release ZIP are missing.'
+}
+Write-Host ("Root documents OK ({0} files)." -f $rootDocuments.Count)
 
 Write-Host ''
 Write-Host '== Version consistency =='
@@ -78,8 +94,11 @@ if ($ExpectedVersion) {
 Write-Host ''
 Write-Host '== Encoding check =='
 $bad = @()
-foreach ($rel in $actual) {
-    $bytes = [System.IO.File]::ReadAllBytes((Join-Path $root $rel))
+$encodingTargets = @($actual | ForEach-Object { [pscustomobject]@{ Rel = $_; Path = (Join-Path $root $_) } }) +
+    @($rootDocuments | ForEach-Object { [pscustomobject]@{ Rel = $_; Path = (Join-Path $repo $_) } })
+foreach ($target in $encodingTargets) {
+    $rel = $target.Rel
+    $bytes = [System.IO.File]::ReadAllBytes($target.Path)
     $hasBom = $bytes.Length -ge 3 -and $bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and $bytes[2] -eq 0xBF
     $hasCrlf = $false
     for ($i = 1; $i -lt $bytes.Length; $i++) {
