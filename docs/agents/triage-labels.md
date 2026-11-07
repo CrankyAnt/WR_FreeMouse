@@ -18,15 +18,17 @@ Type may remain absent until the request is understood. A question that later pr
 
 | Default label | Colour | Meaning |
 | --- | --- | --- |
-| `triage:pending` | `fbca04` | Maintainer evaluation is in progress |
+| `triage:pending` | `fbca04` | Evaluation is in progress |
 | `triage:needs-info` | `fef2c0` | Specific information is required from the reporter |
 
 ## Ready — at most one
 
 | Default label | Colour | Meaning |
 | --- | --- | --- |
-| `ready:independent` | `0e8a16` | The Work Brief is sufficient for independent execution |
+| `ready:independent` | `0e8a16` | The contract is sufficient for independent execution |
 | `ready:interactive` | `5319e7` | Execution requires live user judgement or access |
+
+Both Ready labels require a complete contract (Work Brief, spec or ticket). `ready:interactive` describes an execution need, not an unresolved decision.
 
 ## Status
 
@@ -45,33 +47,19 @@ Type may remain absent until the request is understood. A question that later pr
 
 An unresolved `type:question` may carry `triage:needs-info`. If it remains a genuine question and is answered, close it with `resolution:answered`.
 
-## Planning — at most one
-
-| Default label | Colour | Meaning |
-| --- | --- | --- |
-| `planning:map` | `0052cc` | Canonical map for a large uncertain effort |
-| `planning:research` | `006b75` | Evidence-gathering frontier ticket |
-| `planning:prototype` | `b60205` | Prototype frontier ticket |
-| `planning:grilling` | `7057ff` | Interactive decision frontier ticket |
-| `planning:task` | `1d76db` | Concrete prerequisite frontier ticket |
-
-Claim planning tickets through the tracker assignee, not another label.
-
 ## Lifecycle sets
 
 Treat labels as current semantic state, not an audit log; the tracker timeline preserves prior labels.
 
 | Issue state | Required labels | Optional labels | Labels that must be absent |
 | --- | --- | --- | --- |
-| Active map | exactly one Type; `planning:map` | none | Triage, Ready, Status, Resolution |
-| Active map ticket | exactly one Type; exactly one non-map Planning | none | Triage, Ready, Status, Resolution |
-| Triage | zero or one Type; exactly one Triage | one Planning | Ready, Status, Resolution |
-| Ready Work Brief | exactly one Type; exactly one Ready | one Planning | Triage, Status, Resolution |
-| Active or pre-merge delivery | exactly one Type; exactly one Ready | one Planning | Triage, Status, Resolution |
-| Deferred | exactly one Type; `status:deferred` | one Planning | Triage, Ready, Resolution |
-| Closed as completed | exactly one Type | one Planning | Triage, Ready, Status, Resolution |
-| Closed without delivery | exactly one Type; exactly one Resolution | one Planning | Triage, Ready, Status |
+| Triage | zero or one Type; exactly one Triage | none | Ready, Status, Resolution |
+| Ready contract | exactly one Type; exactly one Ready | none | Triage, Status, Resolution |
+| Active or pre-merge delivery | exactly one Type; exactly one Ready | none | Triage, Status, Resolution |
+| Deferred | exactly one Type; `status:deferred` | none | Triage, Ready, Resolution |
+| Closed other work as completed | exactly one Type | none | Triage, Ready, Status, Resolution |
+| Closed without delivery | exactly one Type; exactly one Resolution | none | Triage, Ready, Status |
 
-The Planning label is the ownership signal for active map artifacts. Automatic triage discovery excludes them; an explicitly named planning issue may still be inspected or deliberately transitioned.
+This vocabulary governs incoming-request triage and complete implementation contracts. A request that already carries Ready, or a label from another workflow's vocabulary, never receives a Triage label. Ready is applied only by `triage-requests`, `write-spec`, and `slice-into-tickets`. Other workflows have separate vocabularies in the tracker configuration.
 
 Before publishing or closing an issue, reconcile it to the applicable row and stop on a conflicting label that cannot be resolved from evidence. Successful delivery uses the tracker's native `closed/completed` state; do not add a duplicate completed-resolution label.

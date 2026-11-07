@@ -17,6 +17,8 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Validate package (syntax + real C# core compile)
         shell: powershell
@@ -40,6 +42,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Require the release tag to be signed by an approved key
         shell: bash
@@ -62,8 +65,9 @@ jobs:
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
+          ZIP_PATH: ${{ steps.build.outputs.zip }}
         run: |
           version="${GITHUB_REF_NAME#v}"
-          gh release create "$GITHUB_REF_NAME" "${{ steps.build.outputs.zip }}" \
+          gh release create "$GITHUB_REF_NAME" "$ZIP_PATH" \
             --title "WR FreeMouse $version" \
             --notes "Built and attested by GitHub Actions from the signed \`$GITHUB_REF_NAME\` tag. See the README section \"Verifying your download\" to check this release."
