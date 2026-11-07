@@ -63,3 +63,12 @@ One line per validation or test command and per CI workflow the repository runs.
 - `repository-hygiene` (shared, `v1`): the convention checks of branch names, commit subjects and pull-request titles, the credential scan, workflow validation, Dependabot coverage and the Markdown link check, and `reuse lint`
 - `dependabot-auto-merge` (shared, `v1`): auto-merge of qualifying Dependabot pull requests
 - `release`: runs both package validations on pushes and pull requests to `main`, and on a signed `v*` tag builds, attests and publishes the release ZIP
+
+## Code style
+
+- Do not use `$pid` as a variable name in PowerShell.
+- Do not define single-letter PowerShell functions or names that collide with a built-in alias, such as `h`.
+- Pass the assembly paths of `System.Windows.Forms` and `System.Drawing` to `Add-Type` with `-ReferencedAssemblies`.
+- Do not call `Application.SetHighDpiMode`; set DPI awareness with `SetProcessDpiAwarenessContext(-4)`.
+- Do not use `AttachThreadInput`.
+- Import `GetCurrentThreadId` from `kernel32.dll`, not `user32.dll`.
