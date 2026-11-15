@@ -1,0 +1,28 @@
+name: validate
+
+# Temporary local workflow: the package validation needs Windows PowerShell 5.1,
+# and the free job runs on Linux. It waits for #13 (custom.runner-label).
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Validate package (syntax + real C# core compile)
+        shell: powershell
+        run: .\.github\scripts\Validate-Package.ps1
+
+      - name: Check package contents (allow-list, version, encoding)
+        shell: powershell
+        run: .\.github\scripts\Test-PackageContents.ps1 -ExpectedVersion ''

@@ -1,3 +1,16 @@
 version: 1
+parts:
+  dependabot-auto-merge: {}
+  github-release:
+    tags: ["v*"]
+    allowed-signers: .github/allowed_signers
+    files: [dist/WR-FreeMouse.zip]
+    script: .github/scripts/build-release.sh
+    runner-label: windows-2025
+    title: "WR FreeMouse {version}"
 dependabot:
   github-actions: [/]
+local-workflows:
+  - workflow: .github/workflows/validate.yml
+    request: 13
+    waits-for: custom.runner-label
