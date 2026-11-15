@@ -47,6 +47,14 @@ Both Ready labels require a complete contract (Work Brief, spec or ticket). `rea
 
 An unresolved `type:question` may carry `triage:needs-info`. If it remains a genuine question and is answered, close it with `resolution:answered`.
 
+## Shared CI vocabulary
+
+This label belongs only to requests for shared CI, which the triage of Shared Workflows collects and answers. Such issues are not triaged here and never carry a Type, Triage, Ready, Status or Resolution label; triage discovery skips them as another workflow's vocabulary.
+
+| Default label | Colour | Meaning |
+| --- | --- | --- |
+| `shared-ci` | `bfd4f2` | Request for shared CI: a shared part, a missing input or a shared part's fault |
+
 ## Lifecycle sets
 
 Treat labels as current semantic state, not an audit log; the tracker timeline preserves prior labels.
