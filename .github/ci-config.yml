@@ -1,5 +1,8 @@
 version: 1
 parts:
+  custom:
+    script: .github/scripts/validate-package.sh
+    runner-label: windows-2025
   dependabot-auto-merge: {}
   github-release:
     tags: ["v*"]
@@ -10,7 +13,3 @@ parts:
     title: "WR FreeMouse {version}"
 dependabot:
   github-actions: [/]
-local-workflows:
-  - workflow: .github/workflows/validate.yml
-    request: 13
-    waits-for: custom.runner-label

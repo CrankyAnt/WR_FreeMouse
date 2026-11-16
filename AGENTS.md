@@ -60,10 +60,10 @@ One line per validation or test command and per CI workflow the repository runs.
 
 - `.github/scripts/Validate-Package.ps1`: parses every package PowerShell script and compiles the embedded C# core under Windows PowerShell 5.1
 - `.github/scripts/Test-PackageContents.ps1`: checks the package allow-list, the root documents the release ZIP ships, version consistency and encoding; with `-ExpectedVersion <tag>` it also matches the version to a release tag
-- `ci` (shared, `v1`): runs repository hygiene and the configured CI parts and reports the one required check `ci / verdict`
+- `.github/scripts/validate-package.sh`: runs both package validations under Windows PowerShell 5.1 for the shared `custom` job on `windows-2025`
+- `ci` (shared, `v1`): runs repository hygiene and the configured CI parts, including both package validations in `custom` on pull requests and pushes to `main`, and reports the one required check `ci / verdict`
 - `automation` (shared, `v1`): runs the configured parts that write, including Dependabot auto-merge, additions, full recording and issue-title normalisation
 - `release` (shared, `v1`): runs the configured release part on a pushed tag or a start by hand and publishes nothing without release configuration
-- `validate`: runs both package validations under Windows PowerShell 5.1 on pushes and pull requests to `main`; a temporary local workflow that waits for `custom.runner-label` (#13)
 
 ## Code style
 
